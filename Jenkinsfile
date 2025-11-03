@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "shiakahmed53/projectci/cd:latest"
+        DOCKER_IMAGE = "shiakahmed53/projectcicd:latest"
     }
 
     stages {
@@ -50,7 +50,7 @@ pipeline {
                     docker rm -f projectci/cd || true
 
                     # Run new container (host 8081 -> container 3000)
-                    docker run -d --name projectci/cd -p 8081:3000 $DOCKER_IMAGE
+                    docker run -d --name projectcicd -p 8081:3000 $DOCKER_IMAGE
 
                     echo "✅ Container running successfully on port 8081"
                 '''
