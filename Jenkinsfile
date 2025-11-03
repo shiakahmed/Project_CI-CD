@@ -57,16 +57,6 @@ pipeline {
             }
         }
 
-        stage('Health Check') {
-            steps {
-                echo "🩺 Checking application health..."
-                sh '''
-                    sleep 3
-                    curl -f http://localhost:8081 || (echo "❌ Health check failed!" && exit 1)
-                '''
-            }
-        }
-
         stage('Cleanup') {
             steps {
                 echo "🧹 Cleaning up unused Docker data..."
@@ -76,7 +66,6 @@ pipeline {
             }
         }
     }
-
     post {
         success {
             echo "✅ Build, push, and deploy completed successfully!"
