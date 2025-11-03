@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 echo "📥 Checking out latest code from GitHub..."
-                git branch: 'main', url: 'https://github.com/zeeshandynamo/linuxproject.git'
+                git branch: 'main', url: 'https://github.com/shiakahmed/Project_CI-CD.git'
             }
         }
 
@@ -17,7 +17,7 @@ pipeline {
             steps {
                 echo "🐳 Building Docker image..."
                 sh '''
-                    docker build -t $DOCKER_IMAGE .
+                    docker build . -t $DOCKER_IMAGE
                 '''
             }
         }
@@ -25,9 +25,9 @@ pipeline {
         stage('Login to DockerHub') {
             steps {
                 echo "🔐 Logging into DockerHub..."
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKERPASS', usernameVariable: 'DOCKER_USER')]) {
                     sh '''
-                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        echo "$DOCKERPASS" | docker login -u "$DOCKER_USER" --password-stdin
                     '''
                 }
             }
@@ -47,10 +47,10 @@ pipeline {
                 echo "🚀 Deploying container..."
                 sh '''
                     # Remove any old container with same name
-                    docker rm -f linuxproject || true
+                    docker rm -f projectci/cd || true
 
                     # Run new container (host 8081 -> container 3000)
-                    docker run -d --name linuxproject -p 8081:3000 $DOCKER_IMAGE
+                    docker run -d --name projectci/cd -p 8081:3000 $DOCKER_IMAGE
 
                     echo "✅ Container running successfully on port 8081"
                 '''
